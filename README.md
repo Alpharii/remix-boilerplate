@@ -9,7 +9,7 @@ A starter kit using Remix with HTTP-only cookie authentication (preauth/postauth
 - **Axios instance** ready to use (`~/lib/Axios`) with `withCredentials: true` to ensure cookies are always sent.
 - **Preauth & Postauth Layouting**:
   - `__preauth+/login.tsx` — for public login pages.
-  - `layout.tsx` in postauth area — for authenticated users only.
+  - `__postauth+/dashboard.tsx` in postauth area — for authenticated users only.
 - **Routing with Access Protection** — layout loader checks token from cookie; redirects to `/login` if invalid.
 
 ## 🎯 Project Purpose
@@ -31,7 +31,7 @@ npm install
 Copy `.env.example` to `.env` and fill in the variables:
 
 ```env
-API_BASE_URL=https://api.example.com
+VITE_API_URL=https://api.example.com
 NODE_ENV=development
 ```
 
@@ -56,8 +56,9 @@ app/
 │  ├─ __preauth+/
 │  │    └─ login.tsx       # Public login page
 │  ├─ __postauth+/         # Authenticated/protected routes
-│  │    └─ layout.tsx      # Main layout after login
-│  ├─ dashboard.tsx        # Example authenticated page
+│  │    └─ dashboard.tsx   # Example authenticated page  
+│  ├─ __preauth.tsx        # Main layout after login
+│  ├─ __postauth.tsx       # Main layout before login
 │  └─ index.tsx            # Redirect to login or dashboard
 lib/
 └─ Axios.ts                # Axios instance with credentials
@@ -67,16 +68,16 @@ lib/
 
 1. User logs in via the `POST /login` form. The server sets a HTTP-only cookie `token`.
 2. Axios is used both in client and Remix loaders, always sending the cookie.
-3. Postauth layout (`__postauth+/layout.tsx`) runs a loader:
+3. Postauth layout (`__postauth.tsx`) runs a loader:
    - Parses the `token` cookie.
-   - Calls `GET /users/me`. If it fails, redirects to `/login`.
+   - Calls an api. If it fails, redirects to `/login`.
 4. If successful, renders the layout + `Outlet()` for page content.
 
 ## 🔧 Customization
 
-- **Add sidebar or toolbar** in `layout.tsx`.
+- **Add sidebar or toolbar** in `__postauth.tsx`.
 - **Add new protected pages** under `__postauth+`.
-- **Change backend API** by editing `API_BASE_URL` and login/me response format.
+- **Change backend API** by editing `VITE_API_URL` and login/me response format.
 - **Increase security** by enabling SameSite + Secure on cookies.
 
 ## 📚 Tips & Best Practices
