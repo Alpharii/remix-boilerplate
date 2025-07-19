@@ -1,40 +1,96 @@
-# Welcome to Remix!
+# Remix Boilerplate ⚛️
 
-- 📖 [Remix docs](https://remix.run/docs)
+A starter kit using Remix with HTTP-only cookie authentication (preauth/postauth), flat routes, and Axios as the HTTP client. Great for building secure web apps with a complete login/logout flow.
 
-## Development
+## 🚀 Key Features
 
-Run the dev server:
+- **Flat Routes** — clean and simple Remix route structure.
+- **HTTP-only JWT Cookie Auth** — secure against XSS attacks.
+- **Axios instance** ready to use (`~/lib/Axios`) with `withCredentials: true` to ensure cookies are always sent.
+- **Preauth & Postauth Layouting**:
+  - `__preauth+/login.tsx` — for public login pages.
+  - `layout.tsx` in postauth area — for authenticated users only.
+- **Routing with Access Protection** — layout loader checks token from cookie; redirects to `/login` if invalid.
 
-```sh
-npm run dev
+## 🎯 Project Purpose
+
+To speed up Remix app development with:
+1. Secure and ready-to-use authentication (login using HTTP-only cookie).
+2. Simple flat routing.
+3. Automatic layout separation for public and authenticated pages.
+4. Preconfigured Axios for stable communication with a separate backend.
+
+## 🛠️ Installation
+
+```bash
+git clone https://github.com/Alpharii/remix-boilerplate.git
+cd remix-boilerplate
+npm install
 ```
 
-## Deployment
+Copy `.env.example` to `.env` and fill in the variables:
 
-First, build your app for production:
-
-```sh
-npm run build
+```env
+API_BASE_URL=https://api.example.com
+NODE_ENV=development
 ```
 
-Then run the app in production mode:
+## ▶️ Run the App
 
-```sh
-npm start
+- Development Mode:  
+  ```bash
+  npm run dev
+  ```
+  
+- Production Build & Preview:  
+  ```bash
+  npm run build
+  npm run start
+  ```
+
+## 🔍 Project Structure
+
+```
+app/
+├─ routes/
+│  ├─ __preauth+/
+│  │    └─ login.tsx       # Public login page
+│  ├─ __postauth+/         # Authenticated/protected routes
+│  │    └─ layout.tsx      # Main layout after login
+│  ├─ dashboard.tsx        # Example authenticated page
+│  └─ index.tsx            # Redirect to login or dashboard
+lib/
+└─ Axios.ts                # Axios instance with credentials
 ```
 
-Now you'll need to pick a host to deploy it to.
+## 🧩 How Auth Works
 
-### DIY
+1. User logs in via the `POST /login` form. The server sets a HTTP-only cookie `token`.
+2. Axios is used both in client and Remix loaders, always sending the cookie.
+3. Postauth layout (`__postauth+/layout.tsx`) runs a loader:
+   - Parses the `token` cookie.
+   - Calls `GET /users/me`. If it fails, redirects to `/login`.
+4. If successful, renders the layout + `Outlet()` for page content.
 
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
+## 🔧 Customization
 
-Make sure to deploy the output of `npm run build`
+- **Add sidebar or toolbar** in `layout.tsx`.
+- **Add new protected pages** under `__postauth+`.
+- **Change backend API** by editing `API_BASE_URL` and login/me response format.
+- **Increase security** by enabling SameSite + Secure on cookies.
 
-- `build/server`
-- `build/client`
+## 📚 Tips & Best Practices
 
-## Styling
+- Make sure your backend allows cross-site cookies (`CORS`, `SameSite=None`, `Secure`).
+- Always use `withCredentials: true` in Axios to send cookies.
+- Never store tokens in localStorage; always use HTTP-only cookies.
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+## 📝 Contributing
+
+1. Fork and create a new branch.
+2. Add your features or bug fixes.
+3. Open a Pull Request.
+
+## 📄 License
+
+MIT License. See [LICENSE](LICENSE) for details.
