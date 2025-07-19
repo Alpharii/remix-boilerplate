@@ -23,6 +23,12 @@ To speed up Remix app development with:
 ## 🛠️ Installation
 
 ```bash
+npx create-remix-boilerplate ./my-app
+```
+
+Or
+
+```bash
 git clone https://github.com/Alpharii/remix-boilerplate.git
 cd remix-boilerplate
 npm install
